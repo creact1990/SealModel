@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>印模配置</title>
+    <link rel="stylesheet" href="css/yinmupaizhi.css">
+</head>
+
+<body>
+    <header class="title">
+        <div class="fl">在线制作印模图片</div>
+        <div class="fl">手动制作印模图片</div>
+    </header>
+    <div class="content clearfix">
+        <div class="cont_l fl">
+            <div class="contl_set">
+                <h4>
+						<span>印模属性设置</span>
+						<span class="line"></span>
+					</h4>
+                <form class="form">
+                    <div>
+                        <label>印模名称:</label>
+                        <input type="text" />
+                    </div>
+                    <div>
+                        <label>制模人:</label>
+                        <input type="text" />
+                    </div>
+                    <div>
+                        <label>制作时间:</label>
+                        <input type="date" id="makeDate"/>
+                    </div>
+                    <div>
+                        <label>状态:</label>
+                        <div class="more">
+                            <input type="radio" name="status" class="checkbox">
+                            <span>启用</span>
+                            <input type="radio" name="status" class="checkbox" checked="true"/>
+                            <span>禁用</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label>备注字段:</label>
+                        <input type="text" />
+                    </div>
+                </form>
+            </div>
+            <div class="preview">
+                <h4>
+					<span>印模属性设置</span>
+					<span class="line"></span>
+				</h4>
+                <div class="preview_ico">
+                	<!--canvas长宽设置不可放到css中，大小最好也别改-->
+                    <canvas id="can"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="cont_r fl">
+            <h4>
+					<span>印模属性设置</span>
+					<span class="line"></span>
+				</h4>
+            <form>
+                <div class="contr_des">印章模版</div>
+				<select id="shape">
+					<option value="oval">椭圆章</option>
+					<option value="square">矩形章</option>
+					<option value="diamond">菱形章</option>
+					<option value="triangle">三角章</option>
+				</select>
+                <div class="contr_des">印章规格</div>
+                <select id="size">
+					<option value="66">66*66</option>
+					<option value="88">88*88</option>
+					<option value="100">100*100</option>
+					<option value="100*80">100*80</option>
+					<option value="120*100" selected="selected">120*100</option>
+					<option value="customsize">自定义</option>
+				</select>
+                <div class="clearfix">
+                    <div class="fl more">
+                        <label>宽度：</label>
+                        <input type="number" id="customeW" value="0" class="more_text">
+                        <span>像素</span>
+                    </div>
+                    <div class="fl more">
+                        <label>高度：</label>
+                        <input type="number" id="customeH" value="0" class="more_text">
+                        <span>像素</span>
+                    </div>
+                </div>
+                <div class="contr_des">印章颜色</div>
+                <div class="backg">
+                    <span>前景色</span>
+                    <input type="color" id="frontColor" value="#FF0000"/>
+                    <span>背景色</span>
+                    <input type="color" id="backgroundColor" value="#FFFFFF"/>
+                    <div class="file-box">
+	                    <input type="file" class="backImg" id="backImg" />
+	                    <input type='button' class='btn' value='背景图片' />
+                    </div>
+                </div>
+                <div class="resolution">
+                    <label>分辨率级别：</label>
+                    <select id="ratio">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                    </select>
+                </div>
+            </form>
+            <div class="select_card">
+                <div class="card_title">
+                    <span class="bg">边框</span>
+                    <span>内图</span>
+                    <span>上弦文</span>
+                    <span>下弦文</span>
+                    <span>横向文1</span>
+                    <span>横向文2</span>
+                    <span>横向文3</span>
+                    <span>横向文4</span>
+                </div>
+                <div class="card_des">
+                    <form class="on">
+                        <div class="des">外框</div>
+                        <div class="more">
+                            <label>画笔宽度：</label>
+                            <input type="number" id="outLW" value="8" class="more_text">
+                            <span>像素</span>
+                        </div>
+                        <div class="des">内框</div>
+                        <div class="active">
+                            <input type="checkbox" id="hasInLine"/>
+                            <label>内框</label>
+                        </div>
+                        <div class="more card_more">
+                            <label>画笔宽度：</label>
+                            <input type="number" id="inLW" value="3" class="more_text" disabled="true">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more">
+                            <label>线框宽度：</label>
+                            <input type="number" id="inWidth" value="56" class="more_text" disabled="true">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more">
+                            <label>线框高度：</label>
+                            <input type="number" id="inHeight" value="56" class="more_text" disabled="true">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="nei_one">
+                            <input type="checkbox" id="hasIcon">
+                            <label for="">使用内图</label>
+                        </div>
+                        <div class="nei_two">
+                            <input type="radio" name="iconType" id="innerIcon">
+                            <label for="">内图符号</label>
+                            <select name="" id="innerIconV" class="iconValue">
+                                <option value="★">★</option>
+                                <option value="☆">☆</option>
+                                <option value="●">●</option>
+                                <option value="◎">◎</option>
+                                <option value="◇">◇ </option>
+                            </select>
+                        </div>
+                        <div class="nei_three">
+                            <input type="radio" name="iconType" id="iconCustom">
+                            <label for="">自定义符号</label>
+                            <input type="text" id="iconCustomV" class="iconValue">
+                        </div>
+                        <div class="nei_fore">
+                            <input type="radio" name="iconType" id="iconImg">
+                            <label for="">内图图片</label>
+                            <!--<input type="text" id="iconImgV" class="iconValue">-->
+                            <input type="file" id="selectImg" accept="image/gif,image/jpeg,image/x-png"/>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>内图宽度：</label>
+                            <input type="number" id="iconSize" value="20" class="more_text">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>下移：</label>
+                            <input type="number" id="iconIngression" value="0" class="more_text">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="top_one">
+                            <label for="">文字内容:</label>
+                            <input type="text" id="quarter0" class="quarter" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字大小：</label>
+                            <input type="number" id="quarterSize0" value="15" class="quarterSize">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select name="" id="quarterBold0" class="quarterBold">
+                                <option value="normal">标准</option>
+                                <option value="bold" selected="selected">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select name="" id="quarterType0" class="quarterType">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>占用角度：</label>
+                            <input type="number" id="quarterAngle0" value="160" class="quarterAngle">
+                            <span>度</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字內移：</label>
+                            <input type="number" id="quarterIngression0" value="15" class="quarterIngression">
+                            <span>像素</span>
+                        </div>
+                        <div class="top_last">
+                            <input type="checkbox" id="quarterReverse0" class="quarterReverse">
+                            <label for="">文字反序</label>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="top_one">
+                            <label for="">文字内容:</label>
+                            <input type="text" id="quarter1" class="quarter" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字大小：</label>
+                            <input type="number" id="quarterSize1" value="10" class="quarterSize">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select name="" id="quarterBold1" class="quarterBold">
+                                <option value="normal">标准</option>
+                                <option value="bold">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select name="" id="quarterType1" class="quarterType">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>占用角度：</label>
+                            <input type="number" id="quarterAngle1" value="160" class="quarterAngle">
+                            <span>度</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字內移：</label>
+                            <input type="number" id="quarterIngression1" value="10" class="quarterIngression">
+                            <span>像素</span>
+                        </div>
+                        <div class="top_last">
+                            <input type="checkbox" id="quarterReverse1" class="quarterReverse">
+                            <label for="">文字反序</label>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="heng_one">
+                            <label for="">文字内容：</label>
+                            <input type="text" class="horizonWord" id="horizonWord0" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字高度：</label>
+                            <input type="number" value="10" class="fontSize" id="fontSize0">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select class="isBold" id="isBold0">
+                                <option value="normal">标准</option>
+                                <option value="bold">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select class="fontType" id="fontType0">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>附加字距：</label>
+                            <input type="number" value="0" class="horizonOffset" id="horizonOffset0">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字下移：</label>
+                            <input type="number" value="5" class="horizonIngression" id="horizonIngression0">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="heng_one">
+                            <label for="">文字内容：</label>
+                            <input type="text" class="horizonWord" id="horizonWord1" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字高度：</label>
+                            <input type="number" value="10" class="fontSize" id="fontSize1">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select class="isBold" id="isBold1">
+                                <option value="normal">标准</option>
+                                <option value="bold">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select class="fontType" id="fontType1">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>附加字距：</label>
+                            <input type="number" value="0" class="horizonOffset" id="horizonOffset1">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字下移：</label>
+                            <input type="number" value="5" class="horizonIngression" id="horizonIngression1">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="heng_one">
+                            <label for="">文字内容：</label>
+                            <input type="text" class="horizonWord" id="horizonWord2" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字高度：</label>
+                            <input type="number" value="10" class="fontSize" id="fontSize2">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select class="isBold" id="isBold2">
+                                <option value="normal">标准</option>
+                                <option value="bold">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select class="fontType" id="fontType2">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>附加字距：</label>
+                            <input type="number" value="0" class="horizonOffset" id="horizonOffset2">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字下移：</label>
+                            <input type="number" value="5" class="horizonIngression" id="horizonIngression2">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                    <form>
+                        <div class="heng_one">
+                            <label for="">文字内容：</label>
+                            <input type="text" class="horizonWord" id="horizonWord3" value="">
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字高度：</label>
+                            <input type="number" value="10" class="fontSize" id="fontSize3">
+                            <span>像素</span>
+                        </div>
+                        <div class="txtcent">
+                            <label for="">粗细:</label>
+                            <select class="isBold" id="isBol3">
+                                <option value="normal">标准</option>
+                                <option value="bold">粗</option>
+                                <option value="900">极粗</option>
+                            </select>
+                        </div>
+                        <div class="top_tow">
+                            <label for="">文字名称:</label>
+                            <select class="fontType" id="fontType3">
+                                <option value="SimSun">宋体</option>
+                                <option value="FangSong">仿宋</option>
+                                <option value="KaiTi">中华楷体</option>
+                                <option value="SimHei">黑体</option>
+                                <option value="MingLiU">细明体</option>
+                            </select>
+                        </div>
+                        <!--<div class="more card_more nei_more">
+                            <label>宽高比例：</label>
+                            <input type="button" value="-">
+                            <input type="text" value="60" class="more_text">
+                            <input type="button" value="+" />
+                            <span>%</span>
+                        </div>-->
+                        <div class="more card_more nei_more">
+                            <label>附加字距：</label>
+                            <input type="number" value="0" class="horizonOffset" id="horizonOffset3">
+                            <span>像素</span>
+                        </div>
+                        <div class="more card_more nei_more">
+                            <label>文字下移：</label>
+                            <input type="number" value="5" class="horizonIngression" id="horizonIngression3">
+                            <span>像素</span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="down_last">
+                <button>提交</button>
+                <button>取消</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery-2.2.2.js"></script>
+    <script src="js/js.js"></script>
+    <script src="js/sealModel.js" type="text/javascript" charset="utf-8"></script>
+</body>
+
+</html>
