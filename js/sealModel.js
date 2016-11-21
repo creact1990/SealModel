@@ -46,28 +46,28 @@ $(function() {
 			$("#customeH").attr("disabled",true);//置灰
 			$("#customeW").attr("disabled",true);
 			var wh = $(this).val().split("*");
-			sealModel.w = wh[0];
-			sealModel.h = wh[1]==undefined?wh[0]:wh[1];
+			sealModel.w = wh[0] * sealModel.ratio;
+			sealModel.h = wh[1]==undefined?sealModel.w:wh[1]*sealModel.ratio;
 			draw();
 		}
 		else
 		{
 			$("#customeH").attr("disabled",false);//启动编辑
 			$("#customeW").attr("disabled",false);
-			$("#customeW").val(sealModel.w);//设置之前选择的宽
-			$("#customeH").val(sealModel.h);//设置之前选择的高
+			$("#customeW").val(sealModel.w * sealModel.ratio);//设置之前选择的宽
+			$("#customeH").val(sealModel.h * sealModel.ratio);//设置之前选择的高
 		}
 		inLineChange($("#hasInLine")[0].checked);
 	});
 	$("#customeH").change(function(){//自定义印章高度
 		if($(this).val()*1+sealModel.penWidth*1 < CENTER_Y){
-			sealModel.h = $(this).val();
+			sealModel.h = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
 	$("#customeW").change(function(){//自定义印章宽度
 		if($(this).val()*1+sealModel.penWidth*1 < CENTER_X){
-			sealModel.w = $(this).val();
+			sealModel.w = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -82,11 +82,12 @@ $(function() {
 		draw();
 	});
 	$("#ratio").change(function(){
+    	ratioChange();
 		draw();
 	});
 	$("#outLW").change(function(){//外框线宽
 		if(sealModel.w*1+$(this).val()*1 < CENTER_X){
-			sealModel.penWidth = $(this).val();
+			sealModel.penWidth = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -97,21 +98,21 @@ $(function() {
 	//内框线宽
 	$("#inLW").change(function(){
 		if($(this).val()*1+sealModel.h2*1 < CENTER_X){
-			sealModel.penWidth2 = $(this).val();
+			sealModel.penWidth2 = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
 	//内框高度
 	$("#inHeight").change(function(){
 		if($(this).val()*1+sealModel.penWidth2*1 < CENTER_Y){
-			sealModel.h2 = $(this).val();
+			sealModel.h2 = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
 	//内框宽度
 	$("#inWidth").change(function(){
 		if($(this).val()*1+sealModel.penWidth2*1 < CENTER_X){
-			sealModel.w2 = $(this).val();
+			sealModel.w2 = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -142,13 +143,13 @@ $(function() {
 	});
 	//内图大小
 	$("#iconSize").change(function(){
-		sealModel.picW = $(this).val();
+		sealModel.picW = $(this).val() * sealModel.ratio;
 		draw();
 	});
 	//内图内移
 	$("#iconIngression").change(function(){
 		if($(this).val() < CENTER_Y){
-			sealModel.picOffset = $(this).val();
+			sealModel.picOffset = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -193,7 +194,7 @@ $(function() {
 	$(".quarterSize").change(function(){
 		var index = $(this).attr("id").substring(11);
 		if(sealModel.texts[index] != undefined){
-			sealModel.texts[index].height = $(this).val();
+			sealModel.texts[index].height = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -225,7 +226,7 @@ $(function() {
 	$(".quarterIngression").change(function(){
 		var index = $(this).attr("id").substring(17);
 		if(sealModel.texts[index] != undefined){
-			sealModel.texts[index].offset = $(this).val();
+			sealModel.texts[index].offset = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -257,7 +258,7 @@ $(function() {
 	$(".fontSize").change(function(){
 		var index = $(this).attr("id").substring(8)*1+2;
 		if(sealModel.texts[index] != undefined){
-			sealModel.texts[index].height  = $(this).val();
+			sealModel.texts[index].height  = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -281,7 +282,7 @@ $(function() {
 	$(".horizonOffset").change(function(){
 		var index = $(this).attr("id").substring(13)*1+2;
 		if(sealModel.texts[index] != undefined){
-			sealModel.texts[index].interval  = $(this).val();
+			sealModel.texts[index].interval  = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -289,7 +290,7 @@ $(function() {
 	$(".horizonIngression").change(function(){
 		var index = $(this).attr("id").substring(17)*1+2;
 		if(sealModel.texts[index] != undefined){
-			sealModel.texts[index].offset = $(this).val();
+			sealModel.texts[index].offset = $(this).val() * sealModel.ratio;
 			draw();
 		}
 	});
@@ -315,11 +316,17 @@ var SEALMODEL = {
 		return JSON.stringify(sealModel);
 	},
 	/**
-	 * 将当前画板保存为base64编码的图片，并返回base64编码 
+	 * 将当前画板的“中间内容部分”保存为base64编码的图片，并返回base64编码 
 	 * @param {Object} smJson
 	 */
 	toBase64Img : function(){
-		return $("#can")[0].toDataURL("image/png");
+		var image = new Image();
+		image.src = $("#can")[0].toDataURL("image/png");
+		var newW = (sealModel.w + sealModel.penWidth)*2;
+		var newH = (sealModel.h + sealModel.penWidth)*2;
+		var newCanvas = $('<canvas width="'+newW+'" height="'+newH+'"></canvas>')[0];
+		newCanvas.getContext("2d").drawImage(image,(PREVIEWSIZE * sealModel.ratio-newW)/2,(PREVIEWSIZE * sealModel.ratio-newH)/2,newW,newH,0,0,newW,newH);
+		return newCanvas.toDataURL("image/png");
 	}
 };
 /*************************以上为公开API***************************/
@@ -327,10 +334,9 @@ var SEALMODEL = {
 
 /*************************以下为私有函数***************************/
 function draw(){
-    ratioChange();
     var cans = $("#can")[0].getContext('2d');
     //清空从坐标（0，0）开始宽800px，高800px的区域，此坐标是can元素的相对坐标，不是基于屏幕也不是基于浏览器
-    cans.clearRect(0, 0, PREVIEWSIZE + 10, PREVIEWSIZE);
+    cans.clearRect(0, 0, PREVIEWSIZE * sealModel.ratio + 10, PREVIEWSIZE * sealModel.ratio);
 	cans.fillStyle = sealModel.colorBg;		//背景色
 	cans.strokeStyle = sealModel.colorFg;	//边框颜色
     
@@ -466,7 +472,11 @@ function drawHorizonWord(cans){
 		if(word != undefined && word.text != undefined && $.trim(word.text) != ""){
 			cans.font = word.bold + " " + word.height + "px " + word.font;
 			cans.fillStyle = sealModel.colorFg;
-			var heightOffSet = sealModel.texts[2].offset*1;
+			if(sealModel.texts[2] == undefined){
+				var heightOffSet = 5 * sealModel.ratio;
+			}else{
+				var heightOffSet = sealModel.texts[2].offset*1;
+			}
 			for(var j = 3; j <= i; j++){
 				if(sealModel.texts[j] != undefined){
 					heightOffSet += (sealModel.texts[j].offset*1 + sealModel.texts[j].height*1);
@@ -551,6 +561,7 @@ function init(){
 	$("#ratio").val(sealModel.ratio);
 	var date = new Date();
 	$("#makeDate").val(date.getFullYear()+"-"+(date.getMonth()+1)+"-"+date.getDate());
+	ratioChange();
 }
 //根据显示比例改变所有size大小
 function ratioChange(){
@@ -565,7 +576,7 @@ function ratioChange(){
 	}
 	
 	sealModel.ratio = ratio;
-    ratio /= old;
+	ratio /= old;
     sealModel.w *= ratio;
     sealModel.h *= ratio;
     sealModel.w2 *= ratio;
